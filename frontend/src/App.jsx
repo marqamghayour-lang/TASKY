@@ -276,29 +276,6 @@ function CustomDateTimePickerModal({ initialValue, onSave, onClose }) {
 }
 
 function ClerkLoginModal({ onClose }) {
-  useEffect(() => {
-    const hideDevMode = () => {
-      const elements = document.querySelectorAll('div, span, a, p');
-      elements.forEach(el => {
-        if (el.textContent && (el.textContent.trim().toLowerCase() === 'development mode' || el.textContent.trim().toLowerCase() === 'secured by clerk')) {
-          el.style.display = 'none';
-          if (el.parentElement) {
-            el.parentElement.style.display = 'none';
-            el.parentElement.style.opacity = '0';
-          }
-          if (el.parentElement && el.parentElement.parentElement) {
-             // In case it's nested deep
-             el.parentElement.parentElement.style.display = 'none';
-          }
-        }
-      });
-    };
-    hideDevMode();
-    const interval = setInterval(hideDevMode, 50);
-    setTimeout(() => clearInterval(interval), 5000); // Stop polling after 5s to save CPU
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="login-overlay" style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, pointerEvents: 'none' }}>

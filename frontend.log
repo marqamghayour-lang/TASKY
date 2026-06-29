@@ -96,3 +96,5 @@ To prevent breaking changes, install @clerk/ui and pass it to ClerkProvider:
 Learn more: https://clerk.com/docs/reference/components/versioning
 (code=structural_css_pin_clerk_ui)
 4:36:22 PM [vite] (client) hmr update /src/App.jsx
+4:51:48 PM [vite] (client) hmr update /src/App.jsx
+4:51:55 PM [vite] (client) hmr update /src/index.css

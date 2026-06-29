@@ -3,7 +3,96 @@
 > vite --host
 
 
-  VITE v8.1.0  ready in 617 ms
+  VITE v8.1.0  ready in 454 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: http://192.168.1.5:5173/
+3:54:16 PM [vite] (client) Pre-transform error: Transform failed with 1 error:
+
+[31m[PARSE_ERROR] [0mUnexpected token. Did you mean `{'}'}` or `&rbrace;`?
+     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/App.jsx:966:8 [38;5;246m][0m
+     [38;5;246m│[0m
+ [38;5;246m966 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m)[0m[38;5;249m}[0m
+ [38;5;240m    │[0m        │ 
+ [38;5;240m    │[0m        ╰─ 
+[38;5;246m─────╯[0m
+
+  Plugin: vite:oxc
+  File: /home/arqam_ghayour/programming/todo-app/frontend/src/App.jsx
+3:54:20 PM [vite] Internal server error: Transform failed with 1 error:
+
+[31m[PARSE_ERROR] [0mUnexpected token. Did you mean `{'}'}` or `&rbrace;`?
+     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/App.jsx:966:8 [38;5;246m][0m
+     [38;5;246m│[0m
+ [38;5;246m966 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m)[0m[38;5;249m}[0m
+ [38;5;240m    │[0m        │ 
+ [38;5;240m    │[0m        ╰─ 
+[38;5;246m─────╯[0m
+
+  Plugin: vite:oxc
+  File: /home/arqam_ghayour/programming/todo-app/frontend/src/App.jsx
+      at transformWithOxc (file:///home/arqam_ghayour/programming/todo-app/frontend/node_modules/vite/dist/node/chunks/node.js:3657:19)
+      at TransformPluginContext.transform (file:///home/arqam_ghayour/programming/todo-app/frontend/node_modules/vite/dist/node/chunks/node.js:3728:26)
+      at EnvironmentPluginContainer.transform (file:///home/arqam_ghayour/programming/todo-app/frontend/node_modules/vite/dist/node/chunks/node.js:29699:51)
+      at async loadAndTransform (file:///home/arqam_ghayour/programming/todo-app/frontend/node_modules/vite/dist/node/chunks/node.js:19725:26)
+      at async viteTransformMiddleware (file:///home/arqam_ghayour/programming/todo-app/frontend/node_modules/vite/dist/node/chunks/node.js:24149:20)
+4:10:12 PM [vite] (client) [Unhandled error] SyntaxError: The requested module '/node_modules/.vite/deps/@clerk_react.js?v=b5c8da4c' does not provide an export named 'SignedIn'
+
+4:10:32 PM [vite] (client) hmr update /src/App.jsx
+4:11:12 PM [vite] (client) [console.warn] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+4:11:35 PM [vite] (client) [console.warn] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+4:11:44 PM [vite] (client) [console.warn] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+4:12:43 PM [vite] (client) hmr update /src/App.jsx
+4:13:13 PM [vite] (client) [console.warn] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+4:17:49 PM [vite] (client) hmr update /src/App.jsx
+4:17:49 PM [vite] (client) [Unhandled error] ReferenceError: ClerkLoginOverlay is not defined
+ > App src/App.jsx:856:9
+    854 |  
+    855 |        <Show when="signed-out">
+    856 |          <ClerkLoginOverlay />
+        |           ^
+    857 |        </Show>
+    858 |  
+ > Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:25904:19
+ > renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:7662:21
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10166:18
+ > beginWork node_modules/react-dom/cjs/react-dom-client.development.js:11778:17
+ > runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:871:29
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:17641:21
+ > workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:17469:40
+ > renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:17450:10
+ > performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:16583:34
+
+4:17:49 PM [vite] (client) [console.warn] An error occurred in the <App> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+4:18:36 PM [vite] (client) hmr update /src/App.jsx
+4:19:14 PM [vite] (client) [console.warn] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+4:19:20 PM [vite] (client) [console.warn] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+4:19:54 PM [vite] (client) hmr update /src/App.jsx
+4:24:16 PM [vite] (client) hmr update /src/App.jsx
+4:26:35 PM [vite] (client) hmr update /src/App.jsx
+4:30:03 PM [vite] (client) hmr update /src/App.jsx
+4:30:09 PM [vite] (client) hmr update /src/index.css
+4:32:01 PM [vite] (client) hmr update /src/App.jsx
+4:32:27 PM [vite] (client) [console.warn] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+4:33:44 PM [vite] (client) hmr update /src/App.jsx
+4:34:50 PM [vite] (client) hmr update /src/App.jsx
+4:34:59 PM [vite] (client) hmr update /src/index.css
+4:35:26 PM [vite] (client) [console.warn] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+4:35:27 PM [vite] (client) [console.warn] Clerk: Structural CSS detected that may break on updates.
+
+Found:
+  - CSS ".cl-rootBox > div > div > a[href*="clerk"]"
+
+These selectors depend on the internal DOM structure of Clerk's components, which may change when Clerk deploys component updates.
+To prevent breaking changes, install @clerk/ui and pass it to ClerkProvider:
+
+  import { ui } from '@clerk/ui'
+  <ClerkProvider ui={ui}>
+
+Learn more: https://clerk.com/docs/reference/components/versioning
+(code=structural_css_pin_clerk_ui)
+4:36:22 PM [vite] (client) hmr update /src/App.jsx

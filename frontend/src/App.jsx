@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Show, SignIn, UserButton, SignOutButton, useUser } from "@clerk/react";
 import './index.css';
 import InteractiveDots from './InteractiveDots';
 
@@ -274,60 +275,37 @@ function CustomDateTimePickerModal({ initialValue, onSave, onClose }) {
   );
 }
 
-// LOGIN COMPONENT
-function LoginCard({ onLogin }) {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
-  const API_URL = 'http://localhost:5000/api'; // Or use getApiUrl() if defined outside, but we can just use the endpoints
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!username.trim() || !password.trim()) return;
-    
-    setErrorMsg('');
-    const endpoint = isSignUp ? '/signup' : '/signin';
-    try {
-      const res = await fetch(`${API_URL}${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username.trim(), password })
+function ClerkLoginModal({ onClose }) {
+  useEffect(() => {
+    const hideDevMode = () => {
+      const elements = document.querySelectorAll('div, span, a, p');
+      elements.forEach(el => {
+        if (el.textContent && (el.textContent.trim().toLowerCase() === 'development mode' || el.textContent.trim().toLowerCase() === 'secured by clerk')) {
+          el.style.display = 'none';
+          if (el.parentElement) {
+            el.parentElement.style.display = 'none';
+            el.parentElement.style.opacity = '0';
+          }
+          if (el.parentElement && el.parentElement.parentElement) {
+             // In case it's nested deep
+             el.parentElement.parentElement.style.display = 'none';
+          }
+        }
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setErrorMsg(data.error || 'Authentication failed');
-      } else {
-        onLogin(data.id, data.username);
-      }
-    } catch (err) {
-      setErrorMsg('Server connection failed.');
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    if (!username.trim()) {
-      setErrorMsg('Enter a username for mock Google login');
-      return;
-    }
-    setErrorMsg('');
-    try {
-      const res = await fetch(`${API_URL}/google-signin`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username.trim() })
-      });
-      const data = await res.json();
-      if (!res.ok) setErrorMsg(data.error);
-      else onLogin(data.id, data.username);
-    } catch (err) {
-      setErrorMsg('Server connection failed.');
-    }
-  };
+    };
+    hideDevMode();
+    const interval = setInterval(hideDevMode, 50);
+    setTimeout(() => clearInterval(interval), 5000); // Stop polling after 5s to save CPU
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="login-overlay">
-      <div className="login-card noise-texture" style={{ position: 'relative', overflow: 'hidden' }}>
+    <div className="login-overlay" style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, pointerEvents: 'none' }}>
+        <InteractiveDots backgroundColor="transparent" dotColor="#c5a85c" />
+      </div>
+      <div className="login-card noise-texture" style={{ position: 'relative', overflow: 'hidden', padding: '1.5rem 2rem 0.5rem 2rem', display: 'flex', justifyContent: 'center', borderRadius: '16px', border: '1px solid rgba(197, 168, 92, 0.3)', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
+        <button onClick={onClose} style={{ position: 'absolute', top: '15px', right: '15px', background: 'transparent', border: 'none', color: '#a0a0a0', fontSize: '2rem', cursor: 'pointer', zIndex: 10, lineHeight: 1 }}>&times;</button>
         <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.15, pointerEvents: 'none' }}>
           <filter id="loginNoise">
             <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
@@ -335,57 +313,140 @@ function LoginCard({ onLogin }) {
           </filter>
           <rect width="100%" height="100%" filter="url(#loginNoise)" />
         </svg>
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <h2 className="modal-title" style={{ fontSize: '2.5rem', marginBottom: '0.5rem', textAlign: 'center' }}>
-            {isSignUp ? 'Create Vault' : 'Welcome Back'}
-          </h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', textAlign: 'center' }}>
-            {isSignUp ? 'Secure your tasks' : 'Identify yourself to enter the vault'}
-          </p>
-          
-          {errorMsg && <p style={{ color: 'var(--danger)', textAlign: 'center', marginBottom: '1rem', fontSize: '0.9rem' }}>{errorMsg}</p>}
-          
-          <form onSubmit={handleSubmit} className="todo-form">
-            <input
-              type="text"
-              className="input-field"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              autoFocus
-              style={{ textAlign: 'center', fontSize: '1.1rem', marginBottom: '1rem' }}
-            />
-            <input
-              type="password"
-              className="input-field"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={{ textAlign: 'center', fontSize: '1.1rem', marginBottom: '1rem' }}
-            />
-            <button type="submit" className="btn btn-primary" style={{ width: '100%', marginBottom: '1rem' }}>
-              {isSignUp ? 'Sign Up' : 'Sign In'}
-            </button>
-          </form>
-          
-          <button type="button" onClick={handleGoogleSignIn} className="btn btn-secondary" style={{ width: '100%', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-            <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-            </svg>
-            Sign in with Google
-          </button>
-          
-          <p style={{ textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-            {isSignUp ? "Already have an account? " : "Don't have an account? "}
-            <span style={{ color: 'var(--gold-primary)', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => { setIsSignUp(!isSignUp); setErrorMsg(''); }}>
-              {isSignUp ? "Sign In" : "Sign Up"}
-            </span>
-          </p>
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'center', width: '100%', animation: 'fadeIn 0.6s ease-out' }}>
+          <SignIn routing="hash" appearance={{ 
+            variables: { 
+              colorBackground: 'transparent', 
+              colorText: 'white', 
+              colorPrimary: '#c5a85c', 
+              colorTextSecondary: '#a0a0a0', 
+              colorInputBackground: 'rgba(0,0,0,0.4)', 
+              colorInputText: 'white',
+              borderRadius: '12px'
+            },
+            elements: { 
+              badge: { display: 'none' },
+              cardBox: {
+                boxShadow: 'none',
+                background: 'transparent',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%'
+              },
+              card: { 
+                boxShadow: 'none', 
+                background: 'transparent',
+                width: '100%',
+                margin: '0 auto'
+              }, 
+              header: { display: 'none' },
+              headerTitle: { display: 'none' }, 
+              headerSubtitle: { display: 'none' },
+              socialButtonsBlockButton: { 
+                border: '2px solid rgba(197, 168, 92, 0.6)', 
+                color: '#fff', 
+                background: 'linear-gradient(90deg, rgba(197, 168, 92, 0.1), rgba(197, 168, 92, 0.2))',
+                transition: 'all 0.3s ease',
+                padding: '0.9rem',
+                fontSize: '1.05rem',
+                fontWeight: 'bold',
+                boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+                boxSizing: 'border-box',
+                display: 'flex',
+                justifyContent: 'center',
+                width: '100%',
+                '&:hover': {
+                  background: 'linear-gradient(90deg, rgba(197, 168, 92, 0.2), rgba(197, 168, 92, 0.3))',
+                  borderColor: '#c5a85c',
+                  transform: 'translateY(-3px)',
+                  boxShadow: '0 6px 20px rgba(197, 168, 92, 0.3)'
+                }
+              },
+              formFieldInput: {
+                border: '1px solid rgba(197, 168, 92, 0.3)',
+                background: 'rgba(0, 0, 0, 0.6)',
+                backdropFilter: 'blur(10px)',
+                transition: 'all 0.3s ease',
+                outline: 'none',
+                padding: '1.35rem 1rem',
+                fontSize: '1.35rem',
+                color: '#fff',
+                width: '100%',
+                boxSizing: 'border-box',
+                '&:focus': {
+                  border: '1px solid #c5a85c',
+                  boxShadow: '0 0 15px rgba(197, 168, 92, 0.3)'
+                }
+              },
+              formFieldLabel: {
+                color: '#c5a85c',
+                marginBottom: '0.4rem',
+                fontSize: '0.95rem',
+                fontWeight: '600'
+              },
+              formButtonPrimary: {
+                background: 'linear-gradient(135deg, #c5a85c, #e0c879)',
+                color: '#000',
+                fontWeight: 'bold',
+                border: 'none',
+                transition: 'all 0.3s ease',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                padding: '1rem',
+                fontSize: '1.1rem',
+                marginTop: '0.75rem',
+                width: '100%',
+                boxSizing: 'border-box',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #e0c879, #f5df9a)',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 5px 20px rgba(197, 168, 92, 0.4)'
+                }
+              },
+              footer: {
+                background: 'transparent',
+                padding: '0.5rem 0 0 0'
+              },
+              footerAction: {
+                background: 'transparent',
+                display: 'flex',
+                justifyContent: 'center',
+                width: '100%',
+                marginTop: '0.5rem',
+                paddingBottom: '0'
+              },
+              footerActionText: {
+                color: '#a0a0a0',
+                fontSize: '0.95rem'
+              },
+              footerActionLink: {
+                color: '#c5a85c',
+                fontWeight: 'bold',
+                fontSize: '0.95rem',
+                '&:hover': {
+                  color: '#e0c879'
+                }
+              },
+              dividerLine: {
+                background: 'rgba(197, 168, 92, 0.3)'
+              },
+              dividerText: {
+                color: '#c5a85c',
+                fontWeight: '600'
+              },
+              identityPreview: {
+                background: 'rgba(197, 168, 92, 0.1)',
+                border: '1px solid rgba(197, 168, 92, 0.3)'
+              },
+              identityPreviewText: {
+                color: '#fff'
+              },
+              identityPreviewEditButtonIcon: {
+                color: '#c5a85c'
+              }
+            }
+          }} />
         </div>
       </div>
     </div>
@@ -410,8 +471,10 @@ const Icon = ({ name, size = 16, className = '', stroke = 'currentColor' }) => {
   }
 };
 function App() {
-  const [userName, setUserName] = useState(() => localStorage.getItem('anti_task_user') || null);
-  const [userId, setUserId] = useState(() => localStorage.getItem('anti_task_userId') || null);
+  const { isLoaded, isSignedIn, user } = useUser();
+  const userName = isSignedIn ? (user?.fullName || user?.firstName || user?.primaryEmailAddress?.emailAddress || 'User') : 'Guest';
+  const userId = isSignedIn ? (user?.id) : null;
+  
   const [activeTab, setActiveTab] = useState('today'); // 'today', 'upcoming', 'filters', or project category
   const [projects, setProjects] = useState(() => JSON.parse(localStorage.getItem('anti_task_projects')) || ['Project']);
 
@@ -424,9 +487,13 @@ function App() {
   const [dueAt, setDueAt] = useState(''); 
   const [showAddForm, setShowAddForm] = useState(false);
   const [showPickerModal, setShowPickerModal] = useState(false); 
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [now, setNow] = useState(new Date());
   const [isLightMode, setIsLightMode] = useState(false);
+
+  const getGuestTodos = () => JSON.parse(localStorage.getItem('anti_task_guest_todos') || '[]');
+  const saveGuestTodos = (t) => localStorage.setItem('anti_task_guest_todos', JSON.stringify(t));
 
   useEffect(() => {
     if (isLightMode) document.body.classList.add('light-mode');
@@ -455,13 +522,6 @@ function App() {
 
   const priorityWeight = { high: 3, medium: 2, low: 1 };
 
-  const handleLogin = (id, name) => {
-    setUserId(id);
-    setUserName(name);
-    localStorage.setItem('anti_task_userId', id);
-    localStorage.setItem('anti_task_user', name);
-  };
-
   const handleAddProject = () => {
     const p = prompt("Enter project name:");
     if (p && !projects.includes(p)) {
@@ -475,13 +535,18 @@ function App() {
   const fetchTodos = async () => {
     setLoading(true);
     try {
-      const response = await fetch(API_URL, {
-        headers: { 'X-User-Id': userId }
-      });
-      if (!response.ok) throw new Error('Failed to fetch tasks.');
-      const data = await response.json();
-      setTodos(data);
-      setIsOnline(true);
+      if (!isSignedIn) {
+        setTodos(getGuestTodos());
+        setIsOnline(true);
+      } else {
+        const response = await fetch(API_URL, {
+          headers: { 'X-User-Id': userId }
+        });
+        if (!response.ok) throw new Error('Failed to fetch tasks.');
+        const data = await response.json();
+        setTodos(data);
+        setIsOnline(true);
+      }
     } catch (err) {
       console.error('API connection error:', err);
       setIsOnline(false);
@@ -492,17 +557,18 @@ function App() {
 
   useEffect(() => {
     fetchTodos();
-    const interval = setInterval(async () => {
-      if (!userId) return;
-      try {
-        const response = await fetch(API_URL, { headers: { 'X-User-Id': userId } });
-        setIsOnline(response.ok);
-      } catch (err) {
-        setIsOnline(false);
-      }
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    if (isSignedIn && userId) {
+      const interval = setInterval(async () => {
+        try {
+          const response = await fetch(API_URL, { headers: { 'X-User-Id': userId } });
+          setIsOnline(response.ok);
+        } catch (err) {
+          setIsOnline(false);
+        }
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [isSignedIn, userId]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -542,29 +608,45 @@ function App() {
     let finalCategory = category;
     if (category === 'custom') finalCategory = customCategory.trim() || 'General';
     else if (activeTab !== 'today' && activeTab !== 'upcoming' && activeTab !== 'filters') {
-      finalCategory = activeTab; // Auto assign project category if created while in project view
+      finalCategory = activeTab;
     }
 
     try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-User-Id': userId 
-        },
-        body: JSON.stringify({
+      if (!isSignedIn) {
+        const newTodo = {
+          id: Date.now(),
           title: title.trim(),
           description: description.trim(),
           priority: priority,
           category: finalCategory,
-          due_at: dueAt || null
-        }),
-      });
+          due_at: dueAt || null,
+          completed: false,
+          created_at: new Date().toISOString()
+        };
+        const guestTodos = getGuestTodos();
+        saveGuestTodos([newTodo, ...guestTodos]);
+        setTodos([newTodo, ...todos]);
+      } else {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-User-Id': userId 
+          },
+          body: JSON.stringify({
+            title: title.trim(),
+            description: description.trim(),
+            priority: priority,
+            category: finalCategory,
+            due_at: dueAt || null
+          }),
+        });
 
-      if (!response.ok) throw new Error('Failed to create task');
-
-      const newTodo = await response.json();
-      setTodos([newTodo, ...todos]);
+        if (!response.ok) throw new Error('Failed to create task');
+        const newTodo = await response.json();
+        setTodos([newTodo, ...todos]);
+      }
+      
       setTitle('');
       setDescription('');
       setPriority('medium');
@@ -586,24 +668,31 @@ function App() {
   const saveEditing = async (todo) => {
     if (!editTitle.trim()) return;
     try {
-      const response = await fetch(`${API_URL}/${todo.id}`, {
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-User-Id': userId
-        },
-        body: JSON.stringify({ 
-          title: editTitle.trim(), 
-          description: editDesc.trim(),
-          completed: todo.completed,
-          priority: todo.priority,
-          category: todo.category,
-          due_at: todo.due_at
-        }),
-      });
-      if (!response.ok) throw new Error('Failed to update task');
-      const updatedTodo = await response.json();
-      setTodos(todos.map(t => t.id === todo.id ? updatedTodo : t));
+      if (!isSignedIn) {
+        const guestTodos = getGuestTodos();
+        const updated = guestTodos.map(t => t.id === todo.id ? { ...t, title: editTitle.trim(), description: editDesc.trim() } : t);
+        saveGuestTodos(updated);
+        setTodos(updated);
+      } else {
+        const response = await fetch(`${API_URL}/${todo.id}`, {
+          method: 'PUT',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-User-Id': userId
+          },
+          body: JSON.stringify({ 
+            title: editTitle.trim(), 
+            description: editDesc.trim(),
+            completed: todo.completed,
+            priority: todo.priority,
+            category: todo.category,
+            due_at: todo.due_at
+          }),
+        });
+        if (!response.ok) throw new Error('Failed to update task');
+        const updatedTodo = await response.json();
+        setTodos(todos.map(t => t.id === todo.id ? updatedTodo : t));
+      }
       setEditingTodoId(null);
     } catch (err) {
       alert('Error updating task: ' + err.message);
@@ -612,19 +701,25 @@ function App() {
 
   const handleToggleComplete = async (todo) => {
     try {
-      const response = await fetch(`${API_URL}/${todo.id}`, {
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-User-Id': userId
-        },
-        body: JSON.stringify({ completed: !todo.completed }),
-      });
+      if (!isSignedIn) {
+        const guestTodos = getGuestTodos();
+        const updated = guestTodos.map(t => t.id === todo.id ? { ...t, completed: !todo.completed } : t);
+        saveGuestTodos(updated);
+        setTodos(updated);
+      } else {
+        const response = await fetch(`${API_URL}/${todo.id}`, {
+          method: 'PUT',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-User-Id': userId
+          },
+          body: JSON.stringify({ completed: !todo.completed }),
+        });
 
-      if (!response.ok) throw new Error('Failed to update task');
-
-      const updatedTodo = await response.json();
-      setTodos(todos.map(t => t.id === todo.id ? updatedTodo : t));
+        if (!response.ok) throw new Error('Failed to update task');
+        const updatedTodo = await response.json();
+        setTodos(todos.map(t => t.id === todo.id ? updatedTodo : t));
+      }
     } catch (err) {
       alert('Error updating task: ' + err.message);
     }
@@ -632,12 +727,19 @@ function App() {
 
   const handleDeleteTodo = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, { 
-        method: 'DELETE',
-        headers: { 'X-User-Id': userId }
-      });
-      if (!response.ok) throw new Error('Failed to delete task');
-      setTodos(todos.filter(t => t.id !== id));
+      if (!isSignedIn) {
+        const guestTodos = getGuestTodos();
+        const updated = guestTodos.filter(t => t.id !== id);
+        saveGuestTodos(updated);
+        setTodos(updated);
+      } else {
+        const response = await fetch(`${API_URL}/${id}`, { 
+          method: 'DELETE',
+          headers: { 'X-User-Id': userId }
+        });
+        if (!response.ok) throw new Error('Failed to delete task');
+        setTodos(todos.filter(t => t.id !== id));
+      }
     } catch (err) {
       alert('Error deleting task: ' + err.message);
     }
@@ -827,14 +929,11 @@ function App() {
       <div className={`custom-cursor-dot ${cursorVisible ? 'visible' : ''}`} style={{ left: `${mousePos.x}px`, top: `${mousePos.y}px` }} />
       <div className={`custom-cursor-ring ${cursorVisible ? 'visible' : ''} ${cursorHovered ? 'hovered' : ''}`} style={{ left: `${mousePos.x}px`, top: `${mousePos.y}px` }} />
 
-      {!userName ? (
-        <LoginCard onLogin={handleLogin} />
-      ) : (
-        <div className="app-container split-layout">
+      <div className="app-container split-layout">
           {/* LEFT SIDEBAR PANEL (30%) */}
           <aside className="sidebar-panel">
             <div className="user-profile">
-              <div className="user-avatar" style={{ marginBottom: '0.5rem' }}>{userName.charAt(0).toUpperCase()}</div>
+              {isSignedIn ? <UserButton /> : <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(197, 168, 92, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c5a85c', fontWeight: 'bold' }}>G</div>}
               <h3 className="user-name" style={{ marginBottom: '0.75rem' }}>{userName}</h3>
             </div>
 
@@ -872,6 +971,13 @@ function App() {
             </div>
 
             <div className="sidebar-stats" style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid var(--panel-border)' }}>
+              {isSignedIn && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <SignOutButton>
+                    <button className="btn btn-secondary w-100" style={{ padding: '0.5rem', fontSize: '0.9rem', border: '1px solid rgba(197, 168, 92, 0.3)' }}>Log Out</button>
+                  </SignOutButton>
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
                 <span>Total Tasks</span>
                 <span style={{ color: 'var(--text-bold)' }}>{todos.length}</span>
@@ -895,6 +1001,11 @@ function App() {
                 }
               </h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                {!isSignedIn && (
+                  <button className="btn btn-primary" onClick={() => setShowLoginModal(true)} style={{ padding: '0.55rem 1.75rem', fontSize: '0.95rem', fontWeight: 'bold', letterSpacing: '0.5px' }}>
+                    Login
+                  </button>
+                )}
                 <button 
                   className="btn btn-primary" 
                   onClick={() => setIsLightMode(!isLightMode)} 
@@ -1060,7 +1171,6 @@ function App() {
             </main>
           </main>
         </div>
-      )}
 
       {showPickerModal && (
         <CustomDateTimePickerModal
@@ -1071,6 +1181,10 @@ function App() {
           }}
           onClose={() => setShowPickerModal(false)}
         />
+      )}
+      
+      {showLoginModal && (
+        <ClerkLoginModal onClose={() => setShowLoginModal(false)} />
       )}
     </>
   );

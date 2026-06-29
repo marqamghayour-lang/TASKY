@@ -1339,3 +1339,20 @@ body.light-mode {
 .todo-due-visual.completed .due-visual-remaining {
   display: none;
 }
+
+/* Hide Clerk Development Badge */
+div[style*="z-index: 99999"],
+.cl-internal-b3al4t,
+.cl-internal-1dauvpw,
+.cl-internal-1tc4gvh,
+.cl-internal-13cw97m,
+.cl-internal-wz9eht,
+.cl-internal-phgxis,
+.cl-devMode,
+.cl-badge,
+[class*="cl-badge"],
+.cl-rootBox > div > div > a[href*="clerk"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}

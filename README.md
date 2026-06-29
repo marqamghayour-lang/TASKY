@@ -1,85 +1,85 @@
-# TaskFlow - Elegant Full-Stack TODO Application
+# TASKY
 
-TaskFlow is a premium task management application built with a **Python Flask backend** (with SQLite database) and a modern **React (Vite) frontend**.
+<div align="center">
 
-It is fully prepared for local network testing, direct IP hits, and standard CLI/API client checks.
-
----
-
-## 🏗️ Architecture
-
-- **Backend**: Python 3 (Flask) + SQLite (for task storage) + CORS enabled. Port `5000`.
-- **Frontend**: React 19 (Vite) + CSS custom variables (designed for dark and light modes). Port `5173`.
+<!-- Animated typing header -->
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=28&pause=1000&color=00F7FF&center=true&vCenter=true&width=600&lines=Hey%2C+I'm+ARQAM+%F0%9F%91%8B;BS+AI+%40+FAST+NUCES+Islamabad;C%2B%2B+%7C+Systems+%7C+ML;Building+things+that+actually+work.)](https://git.io/typing-svg)
 
 ---
 
-## 🚀 Getting Started
+<!-- Animated wave banner -->
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f0f0f,100:00F7FF&height=120&section=header&text=&fontSize=0" />
 
-To run the entire application (both frontend and backend) simultaneously:
+</div>
 
-```bash
-./run_app.sh
-```
+## About Me
 
-This script will:
-1. Kill any existing processes running on ports `5000` (Flask) and `5173` (React/Vite).
-2. Start the backend and frontend in the background.
-3. Automatically find and display your local network IP (e.g. `192.168.1.X`), allowing you to hit the app from other devices (direct IP hit).
-4. Stream server logs to `backend.log` and `frontend.log`.
-5. Clean up and shut down both servers when you press `Ctrl+C`.
+- 🎓 BS Computer Science @ **FAST NUCES Islamabad**
+- 💼 Intern @ **PMW 2026** — Platform & Web Engineering Track
+- 🛠️ Currently building **NOTY** — a Win32 C++ clipboard monitor tray app
+- 🧠 Interested in: Systems Programming, Software development, Machine Learning
 
 ---
 
-## 🔍 Validation Checks
+## Tech Stack
 
-Here is how you can verify the application using different methods.
+<div align="center">
 
-### 1. Curl Check (Command Line)
-You can use the built-in validation script to run a automated CRUD testing suite with curl:
-```bash
-./test_api.sh
-```
+![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 
-Or you can run individual curl commands manually:
-
-**Create a Todo Task:**
-```bash
-curl -X POST http://localhost:5000/api/todos \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Verify Flask Backend", "description": "Ensure the API functions correctly"}'
-```
-
-**Get all Todo Tasks:**
-```bash
-curl http://localhost:5000/api/todos
-```
-
-**Update a Todo Task (Complete it):**
-```bash
-curl -X PUT http://localhost:5000/api/todos/1 \
-  -H "Content-Type: application/json" \
-  -d '{"completed": true}'
-```
-
-**Delete a Todo Task:**
-```bash
-curl -X DELETE http://localhost:5000/api/todos/1
-```
+</div>
 
 ---
 
-### 2. Postman Check
-You can import the API calls to Postman:
-- Set up a collection with base URL `http://localhost:5000` or `http://<your-ip>:5000`
-- Use the following endpoints:
-  - `GET` `/api/todos` — Get all tasks
-  - `POST` `/api/todos` — Create a task (JSON body: `{"title": "...", "description": "..."}`)
-  - `PUT` `/api/todos/<id>` — Update task (JSON body: `{"completed": true/false}`)
-  - `DELETE` `/api/todos/<id>` — Delete task
+## Projects
+
+### 🖥️ NOTY — Clipboard Monitor (Win32 C++)
+> A system tray application that monitors the clipboard and appends captured text to a file via a global hotkey.
+- Win32 API · `RegisterHotKey` · `SendInput` · Clipboard API
+- `.ini` config via `AppData` · Resource scripts · MinGW
 
 ---
 
-### 3. Direct IP Hit (Browser Check)
-- Run `./run_app.sh` to obtain the system's local IP address (e.g. `http://192.168.10.2:5173/`).
-- Visit `http://<your-ip>:5173/` from any device connected to the same local network (phone, tablet, other PC).
-- The React application is configured to dynamically route all requests to the API server at `http://<your-ip>:5000` (rather than hardcoded to `localhost`), which allows complete functionality when accessed via direct IP hit.
+### 🖼️ C++ Image Processing Engine
+> OOP-based image processing pipeline with a full class hierarchy.
+- Classes: `Pixel`, `Image`, `Filter` (10 subclasses), `User`, `FileManager`
+- Used `stb_image` for I/O
+
+---
+
+### 🚦 Smart Traffic Light Controller (DLD)
+> Proteus simulation of a sequential logic-based traffic controller.
+- Boolean algebra, K-maps, flip-flops, state machine design
+
+---
+
+## GitHub Stats
+
+<div align="center">
+
+![ARQAM's GitHub stats](https://github-readme-stats.vercel.app/api?username=ARQAM&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117&title_color=00F7FF&icon_color=00F7FF&text_color=ffffff)
+
+![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=ARQAM&layout=compact&theme=tokyonight&hide_border=true&bg_color=0d1117&title_color=00F7FF&text_color=ffffff)
+
+![GitHub Streak](https://streak-stats.demolab.com?user=ARQAM&theme=tokyonight&hide_border=true&background=0d1117&ring=00F7FF&fire=00F7FF&currStreakLabel=00F7FF)
+
+</div>
+
+---
+
+## Academics
+
+- 📍 FAST NUCES Islamabad — Fall 2025 GPA: **3.42**
+
+---
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:00F7FF,100:0f0f0f&height=100&section=footer" />
+
+</div>
